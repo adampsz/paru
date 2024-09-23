@@ -22,9 +22,10 @@ fn pacman_conf(pacman_conf: &str) -> Result<tempfile::NamedTempFile> {
     let conf = pacmanconf::Config::expand_with_opts(None, Some(pacman_conf), Some("/"))?;
 
     // Bug with dbpath in pacstrap
+    // Also remove DownloadUser option since it results in "restricting filesystem access failed" error
     let conf = conf
         .lines()
-        .filter(|l| !l.starts_with("DBPath"))
+        .filter(|l| !l.starts_with("DBPath") && !l.starts_with("DownloadUser"))
         .collect::<Vec<_>>()
         .join("\n");
 
